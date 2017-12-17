@@ -17,46 +17,56 @@ void drawc(int x, int y);
 void resetb();
 int getr();
 char b;
-int mat[6][16];
-int g = 0, bul = 1, l = 0, r;
+int track[6][16];
+int g = 0, gameOn = 1, l = 0, r;
 int score = 1, level = 1, dela = 101;
 using namespace std;
-
-
-
 
 
 int main() {
 	DWORD qThreadID;
 	HANDLE hThread = CreateThread(0, 0, ThreadFn, 0, 0, &qThreadID);
-	gotoxy(7, 2); cout << "CONTROLS"; gotoxy(7, 3); cout << "========"; gotoxy(7, 4); cout << "[A]=LEFT"; gotoxy(7, 5); cout << "[D]=RIGHT";
+	gotoxy(7, 2); 
+	cout << "CONTROLS"; 
+	gotoxy(7, 3); 
+	cout << "========"; 
+	gotoxy(7, 4); 
+	cout << "[A]=LEFT"; 
+	gotoxy(7, 5); 
+	cout << "[D]=RIGHT";
 
 
-	for (int i = 5; i >= 0; i--) {
-		gotoxy(7, 7); cout << i; gotoxy(14, 14); Sleep(1000);
+	for (int i = 5; i >= 0; i--) 
+	{
+		gotoxy(7, 7); 
+		cout << i; 
+		gotoxy(14, 14); 
+		Sleep(1000);
 	}
 
 	system("cls");
 
 
 
-	while (bul) {
-		gotoxy(14, 4); cout << "SCORE:" << score;
-		gotoxy(14, 5); cout << "LEVEL:" << level;
+	while (gameOn) {
+		gotoxy(14, 4);
+		cout << "SCORE:" << score;
+		gotoxy(14, 5);
+		cout << "LEVEL:" << level;
 		resetb();
 		drawc(r, g);
 		drawc(l, 12);
 
 
-		for (int j = 0; j<16; j++)
+		for (int j = 0; j < 16; j++)
 		{
 			gotoxy(4, j + 1);
 			cout << "i";
 			gotoxy(5, j + 1);
 
-			for (int i = 0; i<6; i++)
+			for (int i = 0; i < 6; i++)
 			{
-				if (mat[i][j] == 1)
+				if (track[i][j] == 1)
 				{
 					cout << "O";
 				}
@@ -64,23 +74,51 @@ int main() {
 				{
 					cout << " ";
 				}
-			}gotoxy(11, j + 1); cout << "i";
-			if (g >= 12 & l == r) { bul = 0; }
+			}
+
+			gotoxy(11, j + 1);
+			cout << "i";
+
+			if (g >= 12 & l == r)
+			{
+				gameOn = 0;
+			}
 		}
 
 
 		g++;
-		if (g == 15) {
+		if (g == 15)
+		{
 			g = -4;
 			r = getr();
 			score++;
 		}
-		if (score % 5 == 0 & (g == 15 | g == -4)) { level++; dela = dela - 10; }
-		if (dela<0) { gotoxy(14, 4); cout << "YOU WIN!" << endl; bul = 0; }
+		if (score % 5 == 0 & (g == 15 | g == -4))
+		{
+			level++;
+			dela = dela - 10;
+
+			if (dela < 0)
+			{
+				gotoxy(14, 4);
+				cout << "YOU WIN!" << endl;
+				gameOn = 0;
+			}
+
+			
+		}
+
 		Sleep(dela);
-	}//end while  
+	}//end while 
+
 	 // Close the handle to the thread  
-	if (dela>0) { gotoxy(14, 4); cout << "GAME OVER" << endl; }
+	if (dela>0) 
+	{ 
+		gotoxy(14, 4); 
+		cout << "GAME OVER" << endl; 
+	}
+
+
 	CloseHandle(hThread);
 	_getch();
 	return 0;
@@ -89,16 +127,25 @@ int main() {
 
 DWORD WINAPI ThreadFn(LPVOID vpParam)
 {
-	while (1) {
+	while(1) 
+	{
 		b = _getch();
-		if (b == 'a') { l = 0; }
-		else if (b == 'd') { l = 3; }
+
+		if (b == 'a') 
+		{ 
+			l = 0; 
+		}
+		else if (b == 'd') 
+		{ 
+			l = 3; 
+		}
 	}
+
 	return 0;
 }
 
 
-
+//get windows position x y
 void gotoxy(int x, int y)
 {
 	COORD coord;
@@ -108,11 +155,15 @@ void gotoxy(int x, int y)
 }
 
 
-
+//reset track
 void resetb()
 {
-	for (int j = 0; j<16; j++) {
-		for (int i = 0; i<6; i++) { mat[i][j] = 0; }
+	for (int j = 0; j<16; j++) 
+	{
+		for (int i = 0; i<6; i++) 
+			{ 
+				track[i][j] = 0; 
+			}
 	}
 }
 
@@ -120,11 +171,14 @@ void resetb()
 
 void drawp(int x, int y)
 {
-	if (x >= 0 & x<6 & y >= 0 & y<16) { mat[x][y] = 1; }
+	if (x >= 0 & x<6 & y >= 0 & y<16) 
+	{ 
+		track[x][y] = 1; 
+	}
 }
 
 
-
+//draw car
 void drawc(int x, int y)
 {
 	drawp(1 + x, 0 + y);
